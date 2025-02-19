@@ -1,0 +1,76 @@
+---
+# tasks file for tomcat-setup
+
+- name: Update the System Packages
+  yum:
+    update_cache: yes
+  when: ansible_distribution == 'CentOS'
+
+- name: Update the System Packages
+  apt:
+    update_cache: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Create a Tomcat User
+  user:
+    name: tomcat
+
+- name: Create a Tomcat Group
+  group:
+    name: tomcat
+
+- name: Install JAVA
+  apt:
+    name: openjdk-17-jdk
+    state: present
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install JAVA
+  yum:
+    name: java-11-openjdk.x86_64
+    state: present
+  when: ansible_distribution == 'CentOS'    
+
+- name: Create a Tomcat Directory
+  file:
+    path: /opt/tomcat10
+    owner: tomcat
+    group: tomcat
+    mode: 755
+    recurse: yes
+
+- name: download & unarchive tomcat10
+  unarchive:
+    src: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.100/src/apache-tomcat-9.0.100-src.tar.gz
+    dest: /opt/tomcat10
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+
+- name: Change ownership of tomcat directory
+  file:
+    path: /opt/tomcat10
+    owner: tomcat
+    group: tomcat
+    mode: "u+rwx,g+rx,o=rx"
+    recurse: yes
+    state: directory
+
+- name: Copy Tomcat service from local to remote
+  template:
+    src: tomcat_centos.service
+    dest: /etc/systemd/system/tomcat.service
+    mode: 0755
+  when: ansible_distribution == 'CentOS'
+
+- name: Copy Tomcat service from local to remote for ubuntu
+  template:
+    src: tomcat_ubuntu.service
+    dest: /etc/systemd/system/tomcat.service
+    mode: 0755
+  when: ansible_distribution == 'Ubuntu'
+    
+- name: Start and Enable Tomcat 10 on sever
+  systemd:
+    name: tomcat
+    state: started
+    daemon_reload: true

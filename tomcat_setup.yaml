@@ -1,0 +1,5 @@
+---
+- name: tomcat setup
+  hosts: all
+  roles:
+    - "tomcat-setup"
