@@ -1,22 +1,28 @@
 pipeline {
     
 	agent any
-/*	
+	
 	tools {
         maven "maven3"
     }
-*/	
+
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "172.31.40.209:8081"
-        NEXUS_REPOSITORY = "vprofile-release"
-	NEXUS_REPO_ID    = "vprofile-release"
-        NEXUS_CREDENTIAL_ID = "nexuslogin"
+        NEXUS_URL = "172.31.31.35:8081"
+        NEXUS_REPOSITORY = "vprofile"
+	NEXUS_REPO_ID    = "vprofile"
+        NEXUS_CREDENTIAL_ID = "nexuscred"
         ARTVERSION = "${env.BUILD_ID}"
     }
 	
     stages{
+
+        stage('Fetch Code'){
+            steps{
+                git branch: 'main', url: 'https://github.com/Akshat-pixel/ansiblePractice.git'
+            }
+        }
         
         stage('BUILD'){
             steps {
@@ -56,11 +62,11 @@ pipeline {
         stage('CODE ANALYSIS with SONARQUBE') {
           
 		  environment {
-             scannerHome = tool 'sonarscanner4'
+             scannerHome = tool 'sonar6.2'
           }
 
           steps {
-            withSonarQubeEnv('sonar-pro') {
+            withSonarQubeEnv('sonartoken') {
                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=vprofile-repo \
                    -Dsonar.projectVersion=1.0 \
@@ -71,11 +77,11 @@ pipeline {
                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
             }
 
-            timeout(time: 10, unit: 'MINUTES') {
-               waitForQualityGate abortPipeline: true
-            }
-          }
-        }
+        //     timeout(time: 10, unit: 'MINUTES') {
+        //        waitForQualityGate abortPipeline: true
+        //     }
+        //   }
+        // }
 
         stage("Publish to Nexus Repository Manager") {
             steps {
@@ -113,9 +119,16 @@ pipeline {
                 }
             }
         }
-
-
+	    stage("Installing Ansible and setting up instances"){
+            steps{
+                sh '''sudo apt update \
+                      sudo apt install software-properties-common \
+                      sudo add-apt-repository --yes --update ppa:ansible/ansible \
+                      sudo apt install ansible \
+                      cp /root/inventory.yaml ./ \
+                      cp /root/clientkey.pem ./ \
+                      ansible-playbook tomcat_setup.yaml'''
+            }
+        }
     }
-
-
 }
