@@ -70,7 +70,7 @@ pipeline {
                     nexusUrl: '172.31.31.35:8081',
                     groupId: 'QA',
                     version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-                    repository: 'vprofile-repo',
+                    repository: 'vprofile-',
                     credentialsId: 'nexuscred',
                     artifacts: [
                         [artifactId: 'vproapp',
