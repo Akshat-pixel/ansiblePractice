@@ -3,6 +3,7 @@ pipeline {
 	agent any
 	
 	tools {
+	jdk "JDK17"
         maven "mvn"
     }
 
@@ -61,9 +62,9 @@ pipeline {
 
         stage('CODE ANALYSIS with SONARQUBE') {
           
-		  environment {
-             scannerHome = tool 'sonar6.2'
-          }
+   		environment {
+                	scannerHome = tool 'sonar6.2'
+            }
 
           steps {
             withSonarQubeEnv('sonarserver') {
