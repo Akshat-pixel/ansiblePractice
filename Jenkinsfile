@@ -80,8 +80,8 @@ pipeline {
         //     timeout(time: 10, unit: 'MINUTES') {
         //        waitForQualityGate abortPipeline: true
         //     }
-        //   }
-        // }
+          }
+        }
 
         stage("Publish to Nexus Repository Manager") {
             steps {
