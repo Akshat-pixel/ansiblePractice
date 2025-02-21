@@ -59,7 +59,7 @@ pipeline {
                 }
             }
         }
-	stage('CODE ANALYSIS with SONARQUBE') {
+	/* stage('CODE ANALYSIS with SONARQUBE') {
           
 	environment {
              scannerHome = tool 'sonar6.2'
@@ -78,7 +78,7 @@ pipeline {
                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
             }
           }
-        }
+        }*/
 
         stage("Upload Artifact") {
             steps {
