@@ -70,7 +70,7 @@ pipeline {
                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=vprofile \
                    -Dsonar.projectVersion=1.0 \
-		   -Dsonar.login=jenkins \
+		    -Dsonar.login=bfc6b9d1b35ab018295a68ce42136a404e652bd0 \
                    -Dsonar.sources=src/ \
                    -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
