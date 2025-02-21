@@ -99,7 +99,8 @@ pipeline {
         }
 	    stage("Installing Ansible and setting up instances"){
             steps{
-                sh '''sudo apt-get update && apt-get install -y apt-transport-https \
+                sh '''sudo apt-get install -y apt-transport-https \
+		      sudo apt-get update \
                       sudo apt install software-properties-common -y \
                       sudo add-apt-repository --yes --update ppa:ansible/ansible -y \
                       sudo apt install ansible -y \
