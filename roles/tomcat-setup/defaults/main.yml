@@ -1,5 +1,3 @@
 ---
 # defaults file for tomcat-setup
-
-ansible_user: ec2-user
-ansible_ssh_private_key_file: /root/clientkey.pem
+ansible_ssh_private_key_file: /home/ubuntu/clientkey.pem
