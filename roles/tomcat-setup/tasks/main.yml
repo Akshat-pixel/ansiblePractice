@@ -68,9 +68,20 @@
     dest: /etc/systemd/system/tomcat.service
     mode: 0755
   when: ansible_distribution == 'Ubuntu'
-    
+
 - name: Start and Enable Tomcat 10 on sever
   systemd:
     name: tomcat
     state: started
     daemon_reload: true
+
+- name: Download latest artifact from Nexus
+  get_url:
+    url: "{{ artifact_url }}"
+    dest: /opt/tomcat10/webapps/ROOT.war
+    mode: '0644'
+
+- name: Restart Tomcat
+  systemd:
+    name: tomcat
+    state: restarted
